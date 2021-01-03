@@ -10,7 +10,7 @@ from myAI.AI_interface import MyAIModel
 ## Categorize risingrate of nextday
 ## category: >.05, >0, >-.05, <-.05
 
-class DNN02_multi_model(MyAIModel):
+class DNN04_model(MyAIModel):
     def __init__(self):
         ##batch size
         self.batch_size = 10
@@ -120,10 +120,16 @@ class DNN02_multi_model(MyAIModel):
         data = np.hstack([data, movingAve(data[:,-2].reshape(len(data),1), 75), movingAve(data[:,-2].reshape(len(data),1), 200)])
 
         ##Normalize
+        ## Standerd data == Close (data[:,3])
         for i in range(len(data[0])):
-            sigma =np.sqrt(np.average((np.average(data[:,i])-data[:,i])**2))
-            data[:,i] = (np.average(data[:,i])-data[:,i])/sigma
-
+            if not i == 4:
+                sigma =np.sqrt(np.average((data[-1,3]-data[:,i])**2))
+                data[:,i] = (data[-1,3]-data[:,i])/sigma
+            else:
+                sigma = np.sqrt(np.average((data[-1, i] - data[:, i]) ** 2))
+                data[:,i] = (data[-1,i]-data[:,i])/sigma
+            # sigma =np.sqrt(np.average((np.average(data[:,i])-data[:,i])**2))
+            # data[:,i] = (np.average(data[:,i])-data[:,i])/sigma
 
 
         ##Create Input and Answer data
